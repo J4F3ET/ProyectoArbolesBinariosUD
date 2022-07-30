@@ -1,9 +1,27 @@
 #include <iostream>
 #include <stdlib.h>
 #include <string.h>
+#include <algorithm>
 using namespace std;
+void menu(){
+	cout << "Menu de opciones" << endl;
+	cout << "[1].Mostrar Todo(inorden)" << endl;
+	cout << "[2].Consulta Placa"<< endl;//Tiene mostrar las caracteristicas del vehiculo
+	cout << "[3].Cantidad de Vehiculos de color"<< endl;//Cantidad de carros con x color
+	cout << "[4].Mostrar vehiculos de carga" << endl; 
+	cout << "[5].Mostrar vehiculos de pasajeros" << endl; 
+	cout << "[6].Consultar por rango potencia(vehiculos que tiene la misma o mayor potencia)" << endl; 
+	cout << "[7].Mostrar vehiculos por marca" << endl;//Mostrar toda la info de todos los vehiculos que contienen esa marca 
+	cout << "[8].Agregar Vehiculo" << endl;//Mostrar toda la info de todos los vehiculos que contienen esa marca 
+	cout << "[9].Eliminar vehiculo" << endl; 
+	cout << "[10].Salir" << endl;
+}
+void mtipo(){
+	cout << "Escoja una opcion de tipo de auto" << endl;
+	cout << "[1].Vehiculo de carga" << endl;
+	cout << "[2].Vehiculo de pasajeros"<< endl;
+}
 class ArbolBin;
-class Pila;
 class Pila{
 	ArbolBin *dato;
 	Pila *sig;
@@ -88,43 +106,83 @@ public:
 		nuevo->der = NULL;
 		temp->der = nuevo;
 	}
-	// void crearArbol(ArbolBin *&raiz){
-	// 	ArbolBin *temp1, *temp2;
-	// 	int dato = 666;
-	// 	while (dato != -1)
-	// 	{
-	// 		cout << "Dato > ";
-	// 		cin >> dato;
-	// 		if (dato != -1){
-	// 			if (!raiz){
-	// 				crearRaiz(raiz, dato);
-	// 			}else{
-	// 				temp1 = temp2 = raiz;
-	// 				while (temp2 && temp1->dato != dato){
-	// 					temp1 = temp2;
-	// 					if (dato < temp1->dato)
-	// 						temp2 = temp2->izq;
-	// 					else
-	// 						temp2 = temp2->der;
-	// 				}
-	// 				if (temp1->dato == dato){
-	// 					cout << "Numero repetido" << endl;
-	// 				}else{
-	// 					if (dato < temp1->dato)
-	// 						agregarIzq(temp1, dato);
-	// 					else
-	// 						agregarDer(temp1, dato);
-	// 				}
-	// 			}
-	// 		}
-	// 	}
-	// }
+	int calcularACCI(ArbolBin *raiz){
+		int ACCIPLACA=0;
+		for(int i=0;i<=5;i++){//CONVERTIDOR
+			ACCIPLACA+=raiz->placa[i];
+		}
+		return ACCIPLACA;
+	}
+	void agregarAuto(ArbolBin *&raiz){
+		ArbolBin *temp1, *temp2;
+		int dato = 666;
+		char placa[6],marca[20],color[20];//MIEMBROS DE LA CLASE ARBOL BIN
+		int potencia,tv;//MIEMBROS DE LA CLASE ARBOL BIN
+		int ACCIPLACA=0;//PLACA EN VALORES ACCI
+		bool tipo;//Carga 0 y pasajeros 1 MIEMBROS DE LA CLASE ARBOL BIN
+		cout << "Para finalizar el registro del vehiculo debe poner ' . ' en PLACA"<< endl;
+		while (ACCIPLACA != 46){
+			cout << "[ACCIPLACA1]"<<ACCIPLACA<< endl;
+			fflush(stdin);
+			//INICIA EL FORMULARIO DE DATOS
+			cout << "Registrando vehiculo nuevo"<< endl;
+			cout << "[Ingrese Placa]"<< endl;
+			cin.getline(placa,7,'\n');
+			if(placa[0]!='.'){
+				for (int i=0;placa[i]!='\0'; ++i){//minusculas a matyusculas
+					placa[i] = toupper(placa[i]);
+				}
+			}
+			for(int i=0;placa[i]!='\0';i++){//CONVERTIDOR
+					ACCIPLACA+=placa[i];
+			}
+			fflush(stdin);
+			if(ACCIPLACA != 46){
+				cout << "[Ingrese Marca]"<< endl;
+				cin.getline(marca,21,'\n');
+				fflush(stdin);
+				cout << "[Ingrese Color]"<< endl;
+				cin.getline(color,21,'\n');
+				fflush(stdin);
+				cout << "[Ingrese potencia]"<< endl;
+				cin>>potencia;
+				cout<<"[Escoja tipo de vehiculo]"<< endl;
+				mtipo();
+				cin>>tv;
+				if(tv==1)
+					tipo==0;
+				else
+					tipo==1;
+				//FIN FORMULARIO DE DATOS
+				if (ACCIPLACA != 46){
+					temp1 = temp2 = raiz;
+					while (temp2 && temp1->placa != placa){
+							temp1 = temp2;
+							if (ACCIPLACA<calcularACCI(temp1))
+								temp2 = temp2->izq;
+							else
+								temp2 = temp2->der;
+						}
+						if(calcularACCI(temp1)==ACCIPLACA){
+							cout << "Placa existente..." << endl;
+						}else{
+							if(ACCIPLACA<calcularACCI(temp1))
+								agregarIzq(temp1,placa,marca,color,potencia,tipo);
+							else
+								agregarDer(temp1,placa,marca,color,potencia,tipo);
+					}
+				}
+				ACCIPLACA=0;
+			}
+		}
+	}
 	void mostrarALL(ArbolBin *raiz){
-		cout<<"MARCA"<<raiz->marca<<endl;
-		cout<<"COLOR"<<raiz->color<<endl;
-		cout<<"PLACA"<<raiz->placa<<endl;
-		cout<<"TIPO"<<raiz->tipo<<endl;
-		cout<<"POTENCIA"<<raiz->potencia<<endl;
+		cout<<"------------------------------------------------------------"<<endl;
+		cout<<"PLACA => "<<raiz->placa<<endl;
+		cout<<"MARCA => "<<raiz->marca<<endl;
+		cout<<"COLOR => "<<raiz->color<<endl;
+		cout<<"TIPO => "<<raiz->tipo<<endl;
+		cout<<"POTENCIA => "<<raiz->potencia<<endl;
 		cout<<"------------------------------------------------------------"<<endl;
 	}
 	void inorden(ArbolBin *raiz){
@@ -182,33 +240,17 @@ public:
 		return *raiz->placa;
 	}
 };
-void menu(){
-	cout << "Menu de opciones" << endl;
-	cout << "[1].Mostrar Todo(inorden)" << endl;
-	cout << "[2].Consulta Placa"<< endl;//Tiene mostrar las caracteristicas del vehiculo
-	cout << "[3].Cantidad de Vehiculos de color"<< endl;//Cantidad de carros con x color
-	cout << "[4].Mostrar vehiculos de carga" << endl; 
-	cout << "[5].Mostrar vehiculos de pasajeros" << endl; 
-	cout << "[6].Consultar por rango potencia(vehiculos que tiene la misma o mayor potencia)" << endl; 
-	cout << "[7].Mostrar vehiculos por marca" << endl;//Mostrar toda la info de todos los vehiculos que contienen esa marca 
-	cout << "[8].Agregar Vehiculo" << endl;//Mostrar toda la info de todos los vehiculos que contienen esa marca 
-	cout << "[9].Eliminar vehiculo" << endl; 
-	cout << "[10].Salir" << endl;
-}
-void mtipo(){
-	cout << "Escoja una opcion de tipo de auto" << endl;
-	cout << "[1].Vehiculo de carga" << endl;
-	cout << "[2].Vehiculo de pasajeros"<< endl;
-}
 int main(){
 	char placa[6],marca[20],color[20];
 	int potencia,tv;
 	bool tipo;//Carga 0 y pasajeros 1
 	ArbolBin *raiz = NULL, obj_arbol,*aux;
-	// ArbolBin *&raiz, char placa[6],char marca[20],char color[20],int potencia,bool tipo
  	cout << "Ingrese el primer vehiculo"<< endl;
 	cout << "[Ingrese Placa]"<< endl;
 	cin.getline(placa,7,'\n');
+	for (int i=0;placa[i]!='\0'; ++i){//minusculas a matyusculas
+		placa[i] = toupper(placa[i]);
+	}
 	fflush(stdin);
 	cout << "[Ingrese Marca]"<< endl;
 	cin.getline(marca,21,'\n');
@@ -264,7 +306,7 @@ int main(){
 			system("pause");
 			break;
 		case 8: // [8].Agregar vehiculo			
-			cout<<"SIN PROGRAMAR"<<endl;
+			obj_arbol.agregarAuto(raiz);
 			system("pause");
 			break;
 			break;
