@@ -181,7 +181,10 @@ public:
 		cout<<"PLACA => "<<raiz->placa<<endl;
 		cout<<"MARCA => "<<raiz->marca<<endl;
 		cout<<"COLOR => "<<raiz->color<<endl;
-		cout<<"TIPO => "<<raiz->tipo<<endl;
+		if(raiz->tipo==0)
+			cout<<"TIPO => Carga"<<endl;
+		else
+			cout<<"TIPO => Pasajeros"<<endl;
 		cout<<"POTENCIA => "<<raiz->potencia<<endl;
 		cout<<"------------------------------------------------------------"<<endl;
 	}
@@ -236,6 +239,29 @@ public:
 			nivel++;
 		return nivel;
 	}
+	void mostrarTipoVehiculo(ArbolBin *raiz,bool tipo){
+	Pila *aux, obj_pila;
+	ArbolBin *temp = raiz;
+	cout << "Arbol Binario ....." << endl;
+	obj_pila.iniciarPila(aux);
+	while (temp)
+	{
+		obj_pila.agregarPila(aux, temp);
+		temp = temp->izq;
+	}
+	while (!obj_pila.pilaVacia(aux))
+	{
+		temp = obj_pila.retirarPila(aux);
+		if(temp->tipo==tipo)
+			mostrarALL(temp);	
+		temp = temp->der;
+		while (temp)
+		{
+			obj_pila.agregarPila(aux, temp);
+			temp = temp->izq;
+		}
+	}
+	}
 	char getClave(ArbolBin *raiz){
 		return *raiz->placa;
 	}
@@ -267,7 +293,6 @@ int main(){
 		tipo==0;
 	else
  		tipo==1;
-	cout<<"PLACA >"<<placa<<"\nMARCA >"<<marca<<"\nCOLOR >"<<color<<"\nPOTENCIA >"<<potencia<<"\nTIPO >"<<tipo<<endl;
 	obj_arbol.crearRaiz(raiz,placa,marca,color,potencia,tipo);
 	system("pause");
 	int opt,dato;
@@ -290,11 +315,13 @@ int main(){
 			system("pause");
 			break;
 		case 4: // [4].Mostrar vehiculos de carga
-			cout<<"SIN PROGRAMAR"<<endl;
+			// cout << "[0].Vehiculo de carga" << endl;
+			obj_arbol.mostrarTipoVehiculo(raiz,0);
 			system("pause");
 			break;
 		case 5: // [5].Mostrar vehiculos de pasajeros	
-			cout<<"SIN PROGRAMAR"<<endl;
+			// cout << "[1].Vehiculo de pasajeros"<< endl;
+			obj_arbol.mostrarTipoVehiculo(raiz,1);
 			system("pause");
 			break;
 		case 6: // [6].Consultar por rango potencia(vehiculos que tiene la misma o mayor potencia)
