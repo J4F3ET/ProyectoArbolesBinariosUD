@@ -106,23 +106,26 @@ public:
 		nuevo->der = NULL;
 		temp->der = nuevo;
 	}
-	int calcularACCI(ArbolBin *raiz){
-		int ACCIPLACA=0;
-		for(int i=0;i<=5;i++){//CONVERTIDOR
-			ACCIPLACA+=raiz->placa[i];
+	bool placaMenor(ArbolBin *raiz,char placa[6]){
+		bool orden = false;
+		int i=0;
+		while(raiz->placa[i]==placa[i]){
+			i++;
 		}
-		return ACCIPLACA;
+		if(raiz->placa[i]>placa[i])
+			orden=true;
+		return orden;
 	}
-	void agregarAuto(ArbolBin *&raiz){
+	void agregarAuto(ArbolBin *&raiz){  //Se añade un automovil
 		ArbolBin *temp1, *temp2;
-		int dato = 666;
-		char placa[6],marca[20],color[20];//MIEMBROS DE LA CLASE ARBOL BIN
-		int potencia,tv;//MIEMBROS DE LA CLASE ARBOL BIN
-		int ACCIPLACA=0;//PLACA EN VALORES ACCI
-		bool tipo;//Carga 0 y pasajeros 1 MIEMBROS DE LA CLASE ARBOL BIN
+			int dato = 666;
+			char placa[6],marca[20],color[20];//MIEMBROS DE LA CLASE ARBOL BIN
+			int potencia,tv;//MIEMBROS DE LA CLASE ARBOL BIN
+			bool tipo;//Carga 0 y pasajeros 1 MIEMBROS DE LA CLASE ARBOL BIN
+		
+		
 		cout << "Para finalizar el registro del vehiculo debe poner ' . ' en PLACA"<< endl;
-		while (ACCIPLACA != 46){
-			cout << "[ACCIPLACA1]"<<ACCIPLACA<< endl;
+		while (placa[0]!='.'){
 			fflush(stdin);
 			//INICIA EL FORMULARIO DE DATOS
 			cout << "Registrando vehiculo nuevo"<< endl;
@@ -133,46 +136,46 @@ public:
 					placa[i] = toupper(placa[i]);
 				}
 			}
-			for(int i=0;placa[i]!='\0';i++){//CONVERTIDOR
-					ACCIPLACA+=placa[i];
-			}
 			fflush(stdin);
-			if(ACCIPLACA != 46){
+			if(placa[0]!='.'){
 				cout << "[Ingrese Marca]"<< endl;
-				cin.getline(marca,21,'\n');
-				fflush(stdin);
+					cin.getline(marca,21,'\n');
+					fflush(stdin);
+					
 				cout << "[Ingrese Color]"<< endl;
-				cin.getline(color,21,'\n');
-				fflush(stdin);
+					cin.getline(color,21,'\n');
+					fflush(stdin);
 				cout << "[Ingrese potencia]"<< endl;
-				cin>>potencia;
+					cin>>potencia;
 				cout<<"[Escoja tipo de vehiculo]"<< endl;
 				mtipo();
 				cin>>tv;
 				if(tv==1)
-					tipo==0;
+					tipo=0;
 				else
-					tipo==1;
+					tipo=1;
+				
+					
+					
 				//FIN FORMULARIO DE DATOS
-				if (ACCIPLACA != 46){
+				if(placa[0]!='.'){
 					temp1 = temp2 = raiz;
-					while (temp2 && temp1->placa != placa){
+					while(temp2 &&strcmp(temp1->placa,placa)){//SI TEMP2 EXISTE Y RAIZ->PLACA ES DIFERENTE A PLACA
 							temp1 = temp2;
-							if (ACCIPLACA<calcularACCI(temp1))
+							if (placaMenor(temp1,placa))//SI PLACAMENOR() EXPULSA UN FALSE ENTONCES, PLACA ES MAYOR QUE RAIZ, POR ENDE VA A DERECHA
 								temp2 = temp2->izq;
 							else
 								temp2 = temp2->der;
 						}
-						if(calcularACCI(temp1)==ACCIPLACA){
+						if(!strcmp(temp1->placa, placa)){//RAIZ->PLACA ES IGUAL A PLACA
 							cout << "Placa existente..." << endl;
 						}else{
-							if(ACCIPLACA<calcularACCI(temp1))
+							if(placaMenor(temp1,placa))
 								agregarIzq(temp1,placa,marca,color,potencia,tipo);
 							else
 								agregarDer(temp1,placa,marca,color,potencia,tipo);
 					}
 				}
-				ACCIPLACA=0;
 			}
 		}
 	}
@@ -188,6 +191,7 @@ public:
 		cout<<"POTENCIA => "<<raiz->potencia<<endl;
 		cout<<"------------------------------------------------------------"<<endl;
 	}
+	
 	void inorden(ArbolBin *raiz){
 		Pila *aux, obj_pila;
 		ArbolBin *temp = raiz;
@@ -231,6 +235,89 @@ public:
 		temp=NULL;
 		return temp;
 	}
+	void BuscarPlaca(ArbolBin *raiz,char placa[6]){ //METODO DE BUSCAR LA PLACA DEL VEHICULO
+		Pila *aux, obj_pila;
+		ArbolBin *temp = raiz;
+		obj_pila.iniciarPila(aux);
+		
+		while(temp){
+			obj_pila.agregarPila(aux,temp);
+			temp=temp->izq;
+		}
+		while(!obj_pila.pilaVacia(aux)){
+			temp = obj_pila.retirarPila(aux);
+			if(1==strcmp(temp->placa,placa)){
+				cout<<"PLACA ENCONTRADA \n";
+				cout<<"\t Placa : "<<temp->placa<<endl;
+				cout<<"\t Marca : "<<temp->marca<<endl;
+				cout<<"\t Potencia : "<<temp->potencia<<endl;
+				cout<<"\t Color : "<<temp->color<<endl;
+				
+					if(temp->tipo==0){
+						cout<<"\t Tipo de vehiculo : Vehiculo de carga "<<endl;
+					}else if(temp->tipo==1){
+						cout<<"\t Tipo de vehiculo : Vehiculo de pasajeros "<<endl;
+					}
+					return ;
+				break;
+			}
+				
+				
+			temp = temp->der;
+			while (temp){
+				obj_pila.agregarPila(aux, temp);
+				temp = temp->izq;
+			}
+		}
+		
+		cout<<"PLACA NO ENCONTRADA \n";
+	}
+
+	void BuscarPotencia(ArbolBin *raiz, int potencia){ //METODO DE BUSCAR POTENCIA (POTENCIAS MAYORES O IGUALES ALA DIGITADA)
+	cout<<"LOS VEHICULOS QUE TIENEN UNA POTENCIA MAYOR E IGUAL A ("<<potencia<<") SON : "<<endl;
+		Pila *aux, obj_pila; //Pila puesta por defecto 
+		
+		
+		ArbolBin *temp=raiz;
+		
+		obj_pila.iniciarPila(aux);
+		
+		
+		while(temp){
+			obj_pila.agregarPila(aux,temp);
+			temp=temp->izq;
+		}
+		
+		while(!obj_pila.pilaVacia(aux)){
+			temp=obj_pila.retirarPila(aux);
+				if(temp->potencia>=potencia){ //Si el temporal ubicado en un nodo del arbol, en su parte potencia es mayor e igual a potencia
+				cout<<"------------------------------------- \n";
+					cout<<"\t Placa : "<<temp->placa<<endl;
+					cout<<"\t Marca : "<<temp->marca<<endl;
+					cout<<"\t Potencia : "<<temp->potencia<<endl;
+					cout<<"\t Color : "<<temp->color<<endl;
+				
+					if(temp->tipo==0){
+						cout<<"\t Tipo de vehiculo : Vehiculo de carga "<<endl;
+					}else if(temp->tipo==1){
+						cout<<"\t Tipo de vehiculo : Vehiculo de pasajeros "<<endl;
+					}
+					cout<<"------------------------------------- \n"<<endl;
+				}
+			temp=temp->der;
+			
+			while(temp){
+				obj_pila.agregarPila(aux,temp);
+				temp=temp->izq;
+			}
+			
+		}
+		
+		
+		
+		
+	}
+
 	int calcularNivel(ArbolBin *raiz){
 		int nivel=0;
 		if(raiz->izq&&raiz->izq->der!=raiz)
@@ -240,27 +327,99 @@ public:
 		return nivel;
 	}
 	void mostrarTipoVehiculo(ArbolBin *raiz,bool tipo){
-	Pila *aux, obj_pila;
-	ArbolBin *temp = raiz;
-	cout << "Arbol Binario ....." << endl;
-	obj_pila.iniciarPila(aux);
-	while (temp)
-	{
-		obj_pila.agregarPila(aux, temp);
-		temp = temp->izq;
-	}
-	while (!obj_pila.pilaVacia(aux))
-	{
-		temp = obj_pila.retirarPila(aux);
-		if(temp->tipo==tipo)
-			mostrarALL(temp);	
-		temp = temp->der;
+		Pila *aux, obj_pila;
+		ArbolBin *temp = raiz;
+		cout << "Arbol Binario ....." << endl;
+		obj_pila.iniciarPila(aux);
 		while (temp)
 		{
 			obj_pila.agregarPila(aux, temp);
 			temp = temp->izq;
 		}
+		while (!obj_pila.pilaVacia(aux))
+		{
+			temp = obj_pila.retirarPila(aux);
+			if(temp->tipo==tipo)
+				mostrarALL(temp);	
+			temp = temp->der;
+			while (temp)
+			{
+				obj_pila.agregarPila(aux, temp);
+				temp = temp->izq;
+			}
+		}
 	}
+	ArbolBin *buscarPadre(ArbolBin *raiz,char placa[6]){
+		Pila *aux, obj_pila;
+		ArbolBin *temp2,*temp = raiz;
+		obj_pila.iniciarPila(aux);
+		while(temp){
+			obj_pila.agregarPila(aux,temp);
+			temp=temp->izq;
+		}
+		while(!obj_pila.pilaVacia(aux)){
+			temp2=temp;
+			temp = obj_pila.retirarPila(aux);
+			if(0==strcmp(temp2->placa,placa))
+				return temp;
+			temp = temp->der;
+			while (temp){
+				obj_pila.agregarPila(aux, temp);
+				temp = temp->izq;
+			}
+		}
+		temp=NULL;
+		return temp;
+	}
+	void reemplazarN(ArbolBin *&raiz,ArbolBin *&nuevoNodo){
+		ArbolBin *padre;
+		padre=buscarPadre(raiz,raiz->placa);
+		if(padre){
+			//Detectar si es padre por derecha o izq
+			if(!strcmp(raiz->placa,padre->izq->placa)){//detecta izq
+				padre->izq=nuevoNodo;
+			}else if(!strcmp(raiz->placa,padre->der->placa)){//detecta der
+				padre->der=nuevoNodo;
+			}
+		}
+	}
+	void eliminarVehiculo(ArbolBin *&raiz,char placa[6]){
+		ArbolBin *aux,*aux2;
+		int auxI;//Auxiliar entero
+		aux=buscar(raiz,placa);
+		if(aux){//DETECTA SI EL NODO EXISTE O NO
+			//CLASIFICAR QUE CLASE DE NODO ES 
+			auxI=calcularNivel(aux);//Metodo retorna la cantidad de hijos
+			if(auxI==2){//Nodo tiene dos hijos
+				aux2=aux;
+				aux2=aux2->der;
+				while(aux2->izq){
+					aux2=aux2->izq;
+				}
+				//RESCRIBIENDO NODO
+				strcpy(aux->placa,aux2->placa);
+				strcpy(aux->marca,aux2->marca);
+				strcpy(aux->color,aux2->color);
+				aux->potencia=aux2->potencia;
+				aux->tipo=aux2->tipo;
+			}else if(auxI==1){//Nodo tiene un hijo
+				if(aux->izq&&aux->izq->der!=aux){
+					reemplazarN(aux,aux->izq);
+					aux->izq=NULL;
+					aux->der=NULL;
+				}else if(aux->der&&aux->der->izq!=aux){
+					reemplazarN(aux,aux->der);
+					aux->izq=NULL;
+					aux->der=NULL;
+				}
+				delete aux;
+			}else if(auxI==0){//Nodo tiene no tiene hijos
+				aux->izq=NULL;
+				aux->der=NULL;
+				delete aux;
+			}
+		}else
+			cout<<"Placa no encontrada..."<<endl;
 	}
 	char getClave(ArbolBin *raiz){
 		return *raiz->placa;
@@ -290,9 +449,9 @@ int main(){
 	mtipo();
 	cin>>tv;
 	if(tv==1)
-		tipo==0;
+		tipo=false;
 	else
- 		tipo==1;
+ 		tipo=true;
 	obj_arbol.crearRaiz(raiz,placa,marca,color,potencia,tipo);
 	system("pause");
 	int opt,dato;
@@ -307,7 +466,18 @@ int main(){
 			system("pause");		
 			break;
 		case 2: // [2].Consulta Placa			
-			cout<<"SIN PROGRAMAR"<<endl;
+			cout<<endl<<"INGRESE LA PLACA A BUSCAR\n";
+			char pla[6];
+				fflush(stdin);
+				cout<<": ";
+				gets(pla);
+		
+					for (int i=0;pla[i]!='\0'; ++i){ //TRANSFORMA MINUSCULAS A MAYUSCULAS
+						pla[i] = toupper(pla[i]);
+					}
+			
+			obj_arbol.BuscarPlaca(raiz,pla);
+			
 			system("pause");
 			break;
 		case 3: // [3].Cantidad de Vehiculos de color
@@ -325,7 +495,11 @@ int main(){
 			system("pause");
 			break;
 		case 6: // [6].Consultar por rango potencia(vehiculos que tiene la misma o mayor potencia)
-			cout<<"SIN PROGRAMAR"<<endl;
+			
+			cout<<"INGRESE LA POTENCIA DEL VEHICULO A BUSCAR \n";
+			int Po;
+				cin>>Po;
+				obj_arbol.BuscarPotencia(raiz,Po);
 			system("pause");
 			break;
 		case 7: // [7].Mostrar vehiculos por marca
