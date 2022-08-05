@@ -21,6 +21,13 @@ void mtipo(){
 	cout << "[1].Vehiculo de carga" << endl;
 	cout << "[2].Vehiculo de pasajeros"<< endl;
 }
+char trans(char palabra[],int t){
+	palabra[t];
+	for (int i=0;palabra[i]!='\0'; ++i){//minusculas a matyusculas
+		palabra[i] = toupper(palabra[i]);
+	}
+	return *palabra;
+}
 class ArbolBin;
 class Pila{
 	ArbolBin *dato;
@@ -66,17 +73,16 @@ public:
 	}
 };
 class ArbolBin{
-	char placa[6],marca[20],color[20];
+	char placa[7],marca[21],color[21];
     int potencia;
     bool tipo;//Carga 0 y pasajeros 1
 	ArbolBin *izq, *der;
-
 public:
 	void crearRaiz(ArbolBin *&raiz, char placa[6],char marca[20],char color[20],int potencia,bool tipo){
 		raiz = new ArbolBin;
-        strcpy(raiz->placa, placa);
-        strcpy(raiz->marca,marca);
-        strcpy(raiz->color,color);
+		strcpy(raiz->placa,placa);
+		strcpy(raiz->color,color);
+		strcpy(raiz->marca,marca);
 		raiz->potencia=potencia;
 		raiz->tipo=tipo;
 		raiz->izq = NULL;
@@ -181,14 +187,16 @@ public:
 	}
 	void mostrarALL(ArbolBin *raiz){
 		cout<<"------------------------------------------------------------"<<endl;
-		cout<<"PLACA => "<<raiz->placa<<endl;
-		cout<<"MARCA => "<<raiz->marca<<endl;
-		cout<<"COLOR => "<<raiz->color<<endl;
-		if(raiz->tipo==0)
-			cout<<"TIPO => Carga"<<endl;
-		else
-			cout<<"TIPO => Pasajeros"<<endl;
-		cout<<"POTENCIA => "<<raiz->potencia<<endl;
+		cout<<"PLACA ENCONTRADA \n";
+		cout<<"\t Placa : "<<raiz->placa<<endl;
+		cout<<"\t Marca : "<<raiz->marca<<endl;
+		cout<<"\t Potencia : "<<raiz->potencia<<endl;
+		cout<<"\t Color : "<<raiz->color<<endl;
+		if(raiz->tipo==0){
+			cout<<"\t Tipo de vehiculo : Vehiculo de carga "<<endl;
+		}else if(raiz->tipo==1){
+			cout<<"\t Tipo de vehiculo : Vehiculo de pasajeros "<<endl;
+		}
 		cout<<"------------------------------------------------------------"<<endl;
 	}
 	
@@ -235,7 +243,7 @@ public:
 		temp=NULL;
 		return temp;
 	}
-	void BuscarPlaca(ArbolBin *raiz,char placa[6]){ //METODO DE BUSCAR LA PLACA DEL VEHICULO
+	void buscarPlaca(ArbolBin *raiz,char placa[6]){ //METODO DE BUSCAR LA PLACA DEL VEHICULO
 		Pila *aux, obj_pila;
 		ArbolBin *temp = raiz;
 		obj_pila.iniciarPila(aux);
@@ -252,14 +260,11 @@ public:
 				cout<<"\t Marca : "<<temp->marca<<endl;
 				cout<<"\t Potencia : "<<temp->potencia<<endl;
 				cout<<"\t Color : "<<temp->color<<endl;
-				
-					if(temp->tipo==0){
+					if(temp->tipo==0)
 						cout<<"\t Tipo de vehiculo : Vehiculo de carga "<<endl;
-					}else if(temp->tipo==1){
+					else if(temp->tipo==1)
 						cout<<"\t Tipo de vehiculo : Vehiculo de pasajeros "<<endl;
-					}
-					return ;
-				break;
+				return ;
 			}
 				
 				
@@ -269,19 +274,16 @@ public:
 				temp = temp->izq;
 			}
 		}
-		
-		cout<<"PLACA NO ENCONTRADA \n";
+		cout<<"PLACA NO ENCONTRADA... \n";
 	}
 
-	void BuscarPotencia(ArbolBin *raiz, int potencia){ //METODO DE BUSCAR POTENCIA (POTENCIAS MAYORES O IGUALES ALA DIGITADA)
+	void buscarPotencia(ArbolBin *raiz, int potencia){ //METODO DE BUSCAR POTENCIA (POTENCIAS MAYORES O IGUALES ALA DIGITADA)
 	cout<<"LOS VEHICULOS QUE TIENEN UNA POTENCIA MAYOR E IGUAL A ("<<potencia<<") SON : "<<endl;
 		Pila *aux, obj_pila; //Pila puesta por defecto 
-		
 		
 		ArbolBin *temp=raiz;
 		
 		obj_pila.iniciarPila(aux);
-		
 		
 		while(temp){
 			obj_pila.agregarPila(aux,temp);
@@ -311,13 +313,8 @@ public:
 				temp=temp->izq;
 			}
 			
-		}
-		
-		
-		
-		
+		}		
 	}
-
 	int calcularNivel(ArbolBin *raiz){
 		int nivel=0;
 		if(raiz->izq&&raiz->izq->der!=raiz)
@@ -421,9 +418,72 @@ public:
 		}else
 			cout<<"Placa no encontrada..."<<endl;
 	}
-	char getClave(ArbolBin *raiz){
-		return *raiz->placa;
-	}
+	void buscarMarca(ArbolBin *raiz,char marca[20]){
+		Pila *aux, obj_pila;
+		ArbolBin *temp = raiz;
+		obj_pila.iniciarPila(aux);
+
+		while(temp){
+			obj_pila.agregarPila(aux,temp);
+			temp=temp->izq;
+		}
+		while(!obj_pila.pilaVacia(aux)){
+			temp = obj_pila.retirarPila(aux);
+			if(0==strcmp(temp->marca,marca)){
+				cout<<"MARCA ENCONTRADA \n";
+				cout<<"\t Placa : "<<temp->placa<<endl;
+				cout<<"\t Marca : "<<temp->marca<<endl;
+				cout<<"\t Potencia : "<<temp->potencia<<endl;
+				cout<<"\t Color : "<<temp->color<<endl;
+					if(temp->tipo==0){
+						cout<<"\t Tipo de vehiculo : Vehiculo de carga "<<endl;
+					}else if(temp->tipo==1){
+						cout<<"\t Tipo de vehiculo : Vehiculo de pasajeros "<<endl;
+					}
+                }
+                    temp = temp->der;
+                    while (temp){
+                        obj_pila.agregarPila(aux, temp);
+                        temp = temp->izq;
+                    }
+                    cout<<"MARCA NO ENCONTRADA \n";
+                }
+
+            }
+
+void buscarColor(ArbolBin *raiz,char marca[20]){
+		Pila *aux, obj_pila;
+		ArbolBin *temp = raiz;
+		int c=0;
+		obj_pila.iniciarPila(aux);
+
+		while(temp){
+			obj_pila.agregarPila(aux,temp);
+			temp=temp->izq;
+		}
+		while(!obj_pila.pilaVacia(aux)){
+			temp = obj_pila.retirarPila(aux);
+			if(0==strcmp(temp->color,color)){
+				c++;
+				cout<<"COLOR ENCONTRADO\n";
+				cout<<"\t Placa : "<<temp->placa<<endl;
+				cout<<"\t Marca : "<<temp->marca<<endl;
+				cout<<"\t Potencia : "<<temp->potencia<<endl;
+				cout<<"\t Color : "<<temp->color<<endl;
+				if(temp->tipo==0)
+					cout<<"\t Tipo de vehiculo : Vehiculo de carga "<<endl;
+				else if(temp->tipo==1)
+					cout<<"\t Tipo de vehiculo : Vehiculo de pasajeros "<<endl;
+            }
+			temp = temp->der;
+			while (temp){
+				obj_pila.agregarPila(aux, temp);
+				temp = temp->izq;
+			}
+			cout<<"NO COLOR \n";
+		}
+		cout<<"Cantidad total de vehiculos de color "<<marca<<" es "<<c<<endl;
+    }
 };
 int main(){
 	char placa[6],marca[20],color[20];
@@ -456,7 +516,7 @@ int main(){
 	system("pause");
 	int opt,dato;
 	do{
-		fflush;
+		fflush(stdin);
 		system("cls");
 		menu();
 		cin>>opt;
@@ -467,21 +527,25 @@ int main(){
 			break;
 		case 2: // [2].Consulta Placa			
 			cout<<endl<<"INGRESE LA PLACA A BUSCAR\n";
-			char pla[6];
 				fflush(stdin);
 				cout<<": ";
-				gets(pla);
+				cin.getline(placa,7,'\n');
 		
-					for (int i=0;pla[i]!='\0'; ++i){ //TRANSFORMA MINUSCULAS A MAYUSCULAS
-						pla[i] = toupper(pla[i]);
+					for (int i=0;placa[i]!='\0'; ++i){ //TRANSFORMA MINUSCULAS A MAYUSCULAS
+						placa[i] = toupper(placa[i]);
 					}
-			
-			obj_arbol.BuscarPlaca(raiz,pla);
-			
+
+			obj_arbol.buscarPlaca(raiz,placa);
 			system("pause");
 			break;
 		case 3: // [3].Cantidad de Vehiculos de color
-			cout<<"SIN PROGRAMAR"<<endl;
+			fflush(stdin);
+			cout<<"COLOR A BUSCAR:"<<endl;
+            cin.getline(marca,21,'\n');
+            for (int i=0;marca[i]!='\0'; ++i){ //TRANSFORMA MINUSCULAS A MAYUSCULAS
+                marca[i] = toupper(marca[i]);
+            }
+		    obj_arbol.buscarColor(raiz,marca);
 			system("pause");
 			break;
 		case 4: // [4].Mostrar vehiculos de carga
@@ -495,15 +559,20 @@ int main(){
 			system("pause");
 			break;
 		case 6: // [6].Consultar por rango potencia(vehiculos que tiene la misma o mayor potencia)
-			
+			fflush(stdin);
 			cout<<"INGRESE LA POTENCIA DEL VEHICULO A BUSCAR \n";
-			int Po;
-				cin>>Po;
-				obj_arbol.BuscarPotencia(raiz,Po);
+				cin>>potencia;
+				obj_arbol.buscarPotencia(raiz,potencia);
 			system("pause");
 			break;
 		case 7: // [7].Mostrar vehiculos por marca
-			cout<<"SIN PROGRAMAR"<<endl;
+			fflush(stdin);
+			cout<<"MARCA A BUSCAR:"<<endl;
+            cin.getline(marca,21,'\n');
+            for (int i=0;marca[i]!='\0'; ++i){ //TRANSFORMA MINUSCULAS A MAYUSCULAS
+                marca[i] = toupper(marca[i]);
+            }
+		    obj_arbol.buscarMarca(raiz,marca);
 			system("pause");
 			break;
 		case 8: // [8].Agregar vehiculo			
@@ -515,7 +584,7 @@ int main(){
 			cout<<"SIN PROGRAMAR"<<endl;
 			system("pause");
 			break;
-		case 10: // [9].Salir 
+		case 10: // [10].Salir 
 			break;
 		default: // ERROR EN OPCION
 			cout << "Intentelo denuevo" << endl;
