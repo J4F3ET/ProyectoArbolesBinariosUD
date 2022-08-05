@@ -33,7 +33,7 @@ class Pila{
 	ArbolBin *dato;
 	Pila *sig;
 
-public:
+	public:
 	void iniciarPila(Pila *&cab){
 		cab = new Pila;
 		cab->dato = NULL;
@@ -92,8 +92,8 @@ public:
 		ArbolBin *nuevo;
 		nuevo = new ArbolBin;
 		strcpy(nuevo->placa, placa);
-        strcpy(nuevo->marca,marca);
         strcpy(nuevo->color,color);
+        strcpy(nuevo->marca,marca);
 		nuevo->potencia=potencia;
 		nuevo->tipo=tipo;
 		nuevo->izq = NULL;
@@ -104,8 +104,8 @@ public:
 		ArbolBin *nuevo;
 		nuevo = new ArbolBin;
 		strcpy(nuevo->placa, placa);
-        strcpy(nuevo->marca,marca);
         strcpy(nuevo->color,color);
+        strcpy(nuevo->marca,marca);
 		nuevo->potencia=potencia;
 		nuevo->tipo=tipo;
 		nuevo->izq = NULL;
@@ -128,8 +128,6 @@ public:
 			char placa[6],marca[20],color[20];//MIEMBROS DE LA CLASE ARBOL BIN
 			int potencia,tv;//MIEMBROS DE LA CLASE ARBOL BIN
 			bool tipo;//Carga 0 y pasajeros 1 MIEMBROS DE LA CLASE ARBOL BIN
-		
-		
 		cout << "Para finalizar el registro del vehiculo debe poner ' . ' en PLACA"<< endl;
 		while (placa[0]!='.'){
 			fflush(stdin);
@@ -246,30 +244,19 @@ public:
 	void buscarPlaca(ArbolBin *raiz,char placa[6]){ //METODO DE BUSCAR LA PLACA DEL VEHICULO
 		Pila *aux, obj_pila;
 		ArbolBin *temp = raiz;
+		cout << "Arbol Binario ....." << endl;
 		obj_pila.iniciarPila(aux);
-		
-		while(temp){
-			obj_pila.agregarPila(aux,temp);
-			temp=temp->izq;
+		while (temp){
+			obj_pila.agregarPila(aux, temp);
+			temp = temp->izq;
 		}
-		while(!obj_pila.pilaVacia(aux)){
+		while (!obj_pila.pilaVacia(aux)){
 			temp = obj_pila.retirarPila(aux);
-			if(1==strcmp(temp->placa,placa)){
-				cout<<"PLACA ENCONTRADA \n";
-				cout<<"\t Placa : "<<temp->placa<<endl;
-				cout<<"\t Marca : "<<temp->marca<<endl;
-				cout<<"\t Potencia : "<<temp->potencia<<endl;
-				cout<<"\t Color : "<<temp->color<<endl;
-					if(temp->tipo==0)
-						cout<<"\t Tipo de vehiculo : Vehiculo de carga "<<endl;
-					else if(temp->tipo==1)
-						cout<<"\t Tipo de vehiculo : Vehiculo de pasajeros "<<endl;
-				return ;
-			}
-				
-				
+			if(!strcmp(temp->placa,placa))
+				mostrarALL(temp);
 			temp = temp->der;
-			while (temp){
+			while (temp)
+			{
 				obj_pila.agregarPila(aux, temp);
 				temp = temp->izq;
 			}
@@ -411,8 +398,12 @@ public:
 				}
 				delete aux;
 			}else if(auxI==0){//Nodo tiene no tiene hijos
-				aux->izq=NULL;
-				aux->der=NULL;
+				aux2=buscarPadre(aux,placa);
+				if(aux2->izq&&aux2->izq->der!=aux2)
+					aux2->izq=NULL;
+				else if(aux->der&&aux->der->izq!=aux2)
+					aux2->der=NULL;
+				aux->izq=aux->der=NULL;
 				delete aux;
 			}
 		}else
@@ -429,7 +420,7 @@ public:
 		}
 		while(!obj_pila.pilaVacia(aux)){
 			temp = obj_pila.retirarPila(aux);
-			if(0==strcmp(temp->marca,marca)){
+			if(!strcmp(temp->marca,marca)){
 				cout<<"MARCA ENCONTRADA \n";
 				cout<<"\t Placa : "<<temp->placa<<endl;
 				cout<<"\t Marca : "<<temp->marca<<endl;
@@ -446,12 +437,10 @@ public:
                         obj_pila.agregarPila(aux, temp);
                         temp = temp->izq;
                     }
-                    cout<<"MARCA NO ENCONTRADA \n";
                 }
 
             }
-
-void buscarColor(ArbolBin *raiz,char marca[20]){
+	void buscarColor(ArbolBin *raiz,char marca[20]){
 		Pila *aux, obj_pila;
 		ArbolBin *temp = raiz;
 		int c=0;
@@ -463,7 +452,7 @@ void buscarColor(ArbolBin *raiz,char marca[20]){
 		}
 		while(!obj_pila.pilaVacia(aux)){
 			temp = obj_pila.retirarPila(aux);
-			if(0==strcmp(temp->color,color)){
+			if(!strcmp(temp->color,marca)){
 				c++;
 				cout<<"COLOR ENCONTRADO\n";
 				cout<<"\t Placa : "<<temp->placa<<endl;
@@ -480,7 +469,8 @@ void buscarColor(ArbolBin *raiz,char marca[20]){
 				obj_pila.agregarPila(aux, temp);
 				temp = temp->izq;
 			}
-			cout<<"NO COLOR \n";
+			if(c==0)
+				cout<<"NO COLOR \n";
 		}
 		cout<<"Cantidad total de vehiculos de color "<<marca<<" es "<<c<<endl;
     }
@@ -581,7 +571,13 @@ int main(){
 			break;
 			break;
 		case 9: // [9].Eliminar vehiculo			
-			cout<<"SIN PROGRAMAR"<<endl;
+			fflush(stdin);
+			cout<<"PLACA A BUSCAR:"<<endl;
+            cin.getline(placa,7,'\n');
+            for (int i=0;placa[i]!='\0'; ++i){ //TRANSFORMA MINUSCULAS A MAYUSCULAS
+                placa[i] = toupper(placa[i]);
+            }
+			obj_arbol.eliminarVehiculo(raiz,placa);
 			system("pause");
 			break;
 		case 10: // [10].Salir 
