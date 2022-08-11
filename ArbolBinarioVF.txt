@@ -424,15 +424,10 @@ public:
     }
 	void eliminarVehiculo(ArbolBin *&raiz,char placa[6]){
         ArbolBin *aux,*aux2,*aux3;
-        cout<<"Bandera 1"<<endl;
         aux=buscar(raiz,placa);
-        cout<<"Bandera 2"<<endl;
         aux2=padre(raiz,placa);
-        cout<<"Bandera 3"<<endl;
         if(aux){//AUX EXISTE ENTONCES==EXITSE DATO
-            cout<<"Bandera 4"<<endl;
-                if(!strcmp(raiz->placa,placa)){//BORRA RAIZ
-                cout<<"Bandera 5"<<endl;
+            if(!strcmp(raiz->placa,placa)){//BORRA RAIZ
                     if(raiz->der){
                         aux2=raiz->der;//SI NUEVA RAIZ ES LA DERECHA-> MUEVE AUX A LA DER
                         while(aux2->izq)//DETECTA SI EN LA PARTE IZQ DEL ARBOL EXITE UN NODO---REPITE HASTA NO EXITIR PERO NO SE UBICA EN NULLO
@@ -445,38 +440,28 @@ public:
                     aux=raiz;
                     raiz=aux2;
                     //fin de aislar raiz
-                    cout<<"Raiz eliminada con exito... :)"<<endl;
             }else if(aux->der||aux->izq){//BORRA NODO NO TERMINALES
-                cout<<"Bandera 5 nodo no terminal"<<endl;
                 if(aux->der&&aux->izq){//Nodo a eliminar tiene dos hijos
-                    cout<<"Bandera 6 nodo de dos hijos"<<endl;
                     if(placaMenor(raiz,placa)){//Nodo a eliminar esta por izquierda a la raiz
                         aux3=aux->izq;//Establece el sucesor
-
                         while(aux3->der)
                             aux3=aux->der;
                         aux3->der=aux->der;
-                        
                         if(aux2->izq==aux){
                             aux2->izq=aux3;
                         }else
                             aux2->der=aux3;
-
                     }else{//Nodo a eliminar este por derecha a la raiz
                         aux3=aux->der;
                         while(aux3->der)
 							aux3=aux->der;
                         aux3->izq=aux->izq;
-
                         if(aux2->izq==aux){
                             aux2->izq=aux3;
                         }else
                             aux2->der=aux3;
-
                     }
-                    cout<<"bandera"<< endl;
                 }else{//Nodo a eliminar tiene solo un hijo
-                    cout<<"Bandera 6 nodo solo un hijo"<<endl;
                     if(aux->izq&&!aux->der){//Nodo a eliminar tiene hijo por izquierda
                         aux2->izq=aux->izq;
                     }else{
@@ -484,12 +469,9 @@ public:
                     }
                 }
             }else{//BORRA NODOS TERMINALES
-                cout<<"Bandera 5 nodo terminal"<<endl;  
                 if(aux2->der==aux){//Hijo por derecha
-                    cout<<"BANDERA DETECTA NODO HIJO POR DERECHA"<<endl;
                     aux2->der=NULL;
                 }else{//Hijo de papa por iquierda
-                    cout<<"BANDERA DETECTA NODO HIJO POR IZQUIERDA"<<endl;
                     aux2->izq=NULL;
                 }
             }
